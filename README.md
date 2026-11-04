@@ -1,4 +1,4 @@
-<img width="11520" height="3456" alt="Copia de Banner notebooks" src="https://github.com/user-attachments/assets/1c187a02-2294-4f4b-ba84-63766c051a15" />
+<img width="100%" alt="Copia de Banner notebooks" src="https://github.com/user-attachments/assets/1c187a02-2294-4f4b-ba84-63766c051a15" />
 
 # 🚕 TaxiTech Solutions — Sistema de Taxímetro Digital
 
@@ -152,7 +152,7 @@ Cada fase debe entregarse con:
 - [`time` — Python stdlib](https://docs.python.org/3/library/time.html)
 - [`logging` — Python stdlib](https://docs.python.org/3/library/logging.html)
 - [`unittest` — Python stdlib](https://docs.python.org/3/library/unittest.html)
-- [`tkinter` — GUI básica](https://docs.python.org/3/library/tkinter.html)
+- [Streamlit — documentación oficial](https://docs.streamlit.io/) — interfaz gráfica de la fase 3
 
 ### Guías de referencia
 - [Real Python — OOP en Python](https://realpython.com/python3-object-oriented-programming/)
@@ -160,5 +160,6 @@ Cada fase debe entregarse con:
 - [Real Python — Logging](https://realpython.com/python-logging/)
 - [Conventional Commits](https://www.conventionalcommits.org/es/v1.0.0/) — formato de mensajes de commit
 
-### Solución
-[Solución proyecto](https://github.com/Factoria-F5-madrid/stn-taximetro)
+### ¿Partes de cero?
+Si nunca has programado, empieza por [guia/00-antes-de-empezar.md](guia/00-antes-de-empezar.md): ahí tienes lo mínimo de Python que necesitas para la fase 1.
+Después sigue con la guía paso a paso de cada fase, en la carpeta [guia/](guia/).
