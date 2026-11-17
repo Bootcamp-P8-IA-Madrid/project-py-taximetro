@@ -1,3 +1,5 @@
+import time 
+
 #Constantes 
 #Paso 3 
 
@@ -28,11 +30,20 @@ def tarifa(estado):
 
 def main():
     print(AYUDA)
+    carrera = None 
 
     while True:
         orden = input("> ").strip().lower()
 
-        if orden == "a":
+        if orden == "i":
+            carrera = {
+                "estado": "parado",
+                "desde": time.monotonic(),
+                "importe": 0.0
+            }
+            print("carrera iniciada.")
+            print(carrera)
+        elif orden == "a":
             print(AYUDA)
         elif orden == "s":
             print("Hasta luego.")
