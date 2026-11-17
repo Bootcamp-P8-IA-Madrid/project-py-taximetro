@@ -1,0 +1,6 @@
+precio_texto = input("introduce el precio del café: ")
+print(type(precio_texto))
+precio_numero = float(precio_texto)
+print(type(precio_numero))
+total = precio_numero * 3 
+print("El precio de tres cafés es de:", total)
