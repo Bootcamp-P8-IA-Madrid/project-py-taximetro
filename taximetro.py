@@ -54,7 +54,18 @@ def main():
                 "importe": 0.0
             }
             print("carrera iniciada.")
+
+        elif orden == "p":
+            cerrar_tramo(carrera)
+            carrera["estado"] = "parado"
+            print(f"Taxi en {carrera['estado'].upper()}. Llevas {carrera['importe']: .2f} €.")
+
+        elif orden == "m":
+            cerrar_tramo(carrera)
+            carrera["estado"] = "movimiento"
+            print(f"Taxi en {carrera['estado'].upper()}. Llevas {carrera['importe']:.2f} €.")
             
+                
         elif orden == "a":
             print(AYUDA)
         elif orden == "s":
