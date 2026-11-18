@@ -64,8 +64,12 @@ def main():
             cerrar_tramo(carrera)
             carrera["estado"] = "movimiento"
             print(f"Taxi en {carrera['estado'].upper()}. Llevas {carrera['importe']:.2f} €.")
-            
-                
+
+        elif orden =="f":
+            cerrar_tramo(carrera)
+            print(f"Carrera finalizada. Total a pagar: {carrera['importe']:.2f} €.")
+            carrera = None
+
         elif orden == "a":
             print(AYUDA)
         elif orden == "s":
@@ -73,6 +77,7 @@ def main():
             break
         else: 
             print("Orden desconocida. Escribe 'a' para ver la ayuda.")
+
 
 #Arranque
 if __name__ == "__main__":
