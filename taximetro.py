@@ -1,4 +1,4 @@
-import time 
+import time
 
 #Constantes 
 #Paso 3 
@@ -25,6 +25,18 @@ def tarifa(estado):
     elif estado == "movimiento":
         return TARIFA_MOVIMIENTO
 
+#Paso 5 - Cerrar tramo
+
+def cerrar_tramo(carrera):
+    ahora = time.monotonic()
+    segundos = ahora - carrera["desde"]
+    precio_segundo = tarifa(carrera["estado"])
+    coste_tramo = segundos * precio_segundo
+
+    carrera["importe"] += coste_tramo
+    carrera["desde"] = ahora
+
+
 #Paso 2 - Bucle de órdenes
 # Función principal 
 
@@ -42,7 +54,7 @@ def main():
                 "importe": 0.0
             }
             print("carrera iniciada.")
-            print(carrera)
+            
         elif orden == "a":
             print(AYUDA)
         elif orden == "s":
