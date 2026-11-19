@@ -1,0 +1,6 @@
+__pycache__/
+prueba_*.py
+taximetro.log
+historial.csv
+.venv/
+.pytest_cache/
