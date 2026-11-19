@@ -1,10 +1,15 @@
+import logging
 import time
 
-#Constantes 
+#Constantes de la fase 1 
 #Paso 3 
 
 TARIFA_PARADO = 0.02
 TARIFA_MOVIMIENTO = 0.05
+
+#Logger con el nombre del enunciado
+log = logging.getLogger("taximetro")
+
 
 #Paso 1 - Ayuda
 
@@ -36,11 +41,24 @@ def cerrar_tramo(carrera):
     carrera["importe"] += coste_tramo
     carrera["desde"] = ahora
 
+def configurar_log():
+    logging.basicConfig(
+        filename="taximetro.log",
+        level=logging.INFO,
+        encoding="utf-8",
+        format="%(asctime)s %(levelname)s %(message)s"
+    )
+
 
 #Paso 2 - Bucle de órdenes
 # Función principal 
 
+#configurar_log(): Aplica las reglas del archivo.
+
 def main():
+    configurar_log()
+    log.info("Arranque del taxímetro")
+
     print(AYUDA)
     carrera = None 
 
@@ -57,6 +75,7 @@ def main():
                 "desde": time.monotonic(),
                 "importe": 0.0
             }
+            log.info("Carrera iniciada")
             print("carrera iniciada.")
 
         elif orden == "p":
@@ -70,6 +89,7 @@ def main():
 
             cerrar_tramo(carrera)
             carrera["estado"] = "parado"
+            log.info("Cambio de estado a %s (%.2f € acumulados)", "parado", carrera["importe"])
             print(f"Taxi en {carrera['estado'].upper()}. Llevas {carrera['importe']: .2f} €.")
 
         elif orden == "m":
@@ -83,6 +103,7 @@ def main():
 
             cerrar_tramo(carrera)
             carrera["estado"] = "movimiento"
+            log.info("Cambio de estado a %s (%.2f € acumulados)", "movimiento", carrera["importe"])
             print(f"Taxi en {carrera['estado'].upper()}. Llevas {carrera['importe']:.2f} €.")
 
         elif orden =="f":
@@ -91,6 +112,7 @@ def main():
                 continue
 
             cerrar_tramo(carrera)
+            log.info("carrera finalizada: %.2f €", carrera["importe"])
             print(f"Carrera finalizada. Total a pagar: {carrera['importe']:.2f} €.")
             carrera = None
 
@@ -102,9 +124,11 @@ def main():
                 print("Hay una carrera en curso. Finalízala con 'f' antes de salir.")
                 continue
 
+            log.info("Cierre del taxímetro")
             print("Hasta luego.")
             break
         else: 
+            log.warning("Orden desconocida: %r", orden)
             print("Orden desconocida. Escribe 'a' para ver la ayuda.")
 
 
