@@ -1,11 +1,18 @@
+import json
 import logging
+from pathlib import Path
 import time
 
-#Constantes de la fase 1 
-#Paso 3 
+# Rutas seguras para que siempre encuentre los archivos
+CARPETA = Path(__file__).parent
+CONFIG = CARPETA / "config.json"
+LOG = CARPETA / "taximetro.log"
 
-TARIFA_PARADO = 0.02
-TARIFA_MOVIMIENTO = 0.05
+# Tarifas de respaldo si el JSON falla o se borra
+TARIFAS_POR_DEFECTO = {
+    "tarifa_parado": 0.02,
+    "tarifa_movimiento": 0.05,
+}
 
 #Logger con el nombre del enunciado
 log = logging.getLogger("taximetro")
@@ -24,18 +31,19 @@ s salir"""
 #Función auxiliar de tarifas
 #Paso 3 Las tarifas
 
-def tarifa(estado):
+def tarifa(estado, tarifas):
     if estado == "parado":
-        return TARIFA_PARADO
+        return tarifas["tarifa_parado"]
     elif estado == "movimiento":
-        return TARIFA_MOVIMIENTO
+        return tarifas["tarifa_movimiento"]
+    return 0.0
 
 #Paso 5 - Cerrar tramo
 
-def cerrar_tramo(carrera):
+def cerrar_tramo(carrera, tarifas):
     ahora = time.monotonic()
     segundos = ahora - carrera["desde"]
-    precio_segundo = tarifa(carrera["estado"])
+    precio_segundo = tarifa(carrera["estado"], tarifas)
     coste_tramo = segundos * precio_segundo
 
     carrera["importe"] += coste_tramo
@@ -43,11 +51,25 @@ def cerrar_tramo(carrera):
 
 def configurar_log():
     logging.basicConfig(
-        filename="taximetro.log",
+        filename=LOG,
         level=logging.INFO,
         encoding="utf-8",
         format="%(asctime)s %(levelname)s %(message)s"
     )
+
+def cargar_tarifas(ruta=CONFIG):
+    try:
+        contenido = ruta.read_text(encoding="utf-8")
+        datos = json.loads(contenido)
+        tarifas = {
+            "tarifa_parado": float(datos["tarifa_parado"]),
+            "tarifa_movimiento": float(datos["tarifa_movimiento"]),
+        }
+        log.info("Tarifas cargadas de %s: %s", ruta, tarifas)
+        return tarifas
+    except (OSError, json.JSONDecodeError, KeyError, ValueError) as error:
+        log.warning("No se pudo leer %s (%s); uso tarifas por defecto", ruta, error)
+        return dict(TARIFAS_POR_DEFECTO)  
 
 
 #Paso 2 - Bucle de órdenes
@@ -58,6 +80,7 @@ def configurar_log():
 def main():
     configurar_log()
     log.info("Arranque del taxímetro")
+    tarifas = cargar_tarifas()
 
     print(AYUDA)
     carrera = None 
@@ -87,7 +110,7 @@ def main():
                 print("El taxi ya está en estado 'parado'.")
                 continue 
 
-            cerrar_tramo(carrera)
+            cerrar_tramo(carrera, tarifas)
             carrera["estado"] = "parado"
             log.info("Cambio de estado a %s (%.2f € acumulados)", "parado", carrera["importe"])
             print(f"Taxi en {carrera['estado'].upper()}. Llevas {carrera['importe']: .2f} €.")
@@ -101,7 +124,7 @@ def main():
                 print("El taxi ya está en estado 'movimiento'.")
                 continue
 
-            cerrar_tramo(carrera)
+            cerrar_tramo(carrera, tarifas)
             carrera["estado"] = "movimiento"
             log.info("Cambio de estado a %s (%.2f € acumulados)", "movimiento", carrera["importe"])
             print(f"Taxi en {carrera['estado'].upper()}. Llevas {carrera['importe']:.2f} €.")
@@ -111,7 +134,7 @@ def main():
                 print("No hay ninguna carrera en curso.")
                 continue
 
-            cerrar_tramo(carrera)
+            cerrar_tramo(carrera, tarifas)
             log.info("carrera finalizada: %.2f €", carrera["importe"])
             print(f"Carrera finalizada. Total a pagar: {carrera['importe']:.2f} €.")
             carrera = None
